@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ProyectoDatosPersonales_JRUEDAC-impl" default="default" basedir="..">
+    <property file="nbproject/project.properties"/>
+
+    <target name="-init">
+        <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <target name="init" depends="-init"/>
+
+    <target name="default" depends="jar"/>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}"
+               destdir="${build.classes.dir}"
+               classpath="${javac.classpath}"
+               source="${javac.source}"
+               target="${javac.target}"
+               debug="${javac.debug}"
+               deprecation="${javac.deprecation}"
+               includeantruntime="false"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="${dist.jar}" basedir="${build.classes.dir}" manifest="${manifest.file}"/>
+        <echo message="JAR generado en: ${dist.jar}"/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="${main.class}" fork="true">
+            <classpath>
+                <pathelement path="${build.classes.dir}"/>
+                <pathelement path="${javac.classpath}"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="rebuild" depends="clean,jar"/>
+</project>
