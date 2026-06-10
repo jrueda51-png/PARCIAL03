@@ -13,7 +13,6 @@ public class Persona {
     private String telefono;
     private String email;
     private String direccion;
-    private Date fechaRegistro;
 
     public Persona() {
     }
@@ -88,13 +87,5 @@ public class Persona {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public Date getFechaRegistro() {
-        return fechaRegistro;
-    }
-
-    public void setFechaRegistro(Date fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
     }
 }

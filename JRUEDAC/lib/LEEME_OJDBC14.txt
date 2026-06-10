@@ -1,7 +1,0 @@
-Copia aquí el archivo ojdbc14.jar.
-
-Ruta esperada:
-ProyectoDatosPersonales_JRUEDAC/lib/ojdbc14.jar
-
-En NetBeans también puedes agregarlo así:
-Click derecho sobre el proyecto > Properties > Libraries > Add JAR/Folder > seleccionar ojdbc14.jar.

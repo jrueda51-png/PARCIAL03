@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ProyectoDatosPersonales_JRUEDAC" default="default" basedir=".">
-    <description>Proyecto Java MVC con Oracle 10g para datos personales.</description>
+<project name="JRUEDAC" default="default" basedir=".">
+    <description>Builds, tests, and runs the project JRUEDAC.</description>
     <import file="nbproject/build-impl.xml"/>
 </project>

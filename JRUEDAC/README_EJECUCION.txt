@@ -1,51 +1,32 @@
-PROYECTO: ProyectoDatosPersonales_JRUEDAC
+PROYECTO DATOS PERSONALES - JRUEDAC
 
-REQUISITOS:
-1. Oracle 10g funcionando.
-2. Usuario de base de datos: JRUEDAC
-3. Contraseña de base de datos: JRUEDAC
-4. Apache NetBeans IDE.
-5. Librería JDBC: ojdbc14.jar
+1. Abrir el proyecto en Apache NetBeans.
+2. Copiar ojdbc14.jar dentro de la carpeta lib.
+   Debe quedar asi: JRUEDAC/lib/ojdbc14.jar
+3. En NetBeans ir a Project Properties > Libraries > Add JAR/Folder.
+4. Seleccionar lib/ojdbc14.jar.
+5. Ejecutar en SQL*Plus primero como SYSTEM:
 
-PASO 1 - CORREGIR ERROR ORA-01031 EN LA VIEW:
-Entrar a SQL*Plus como SYSTEM:
+   @database/00_PRIVILEGIOS_SYSTEM.sql
 
-CONN SYSTEM/tu_clave
+   Cambiar tu_clave por la clave real de SYSTEM.
 
-Ejecutar:
+6. Ejecutar con JRUEDAC:
 
-GRANT CREATE VIEW TO JRUEDAC;
+   @database/01_CREAR_BD_JRUEDAC.sql
 
-O ejecutar el archivo:
-database/00_solo_corregir_privilegio_vista_SYSTEM.sql
+7. En NetBeans hacer Clean and Build y despues Run.
 
-PASO 2 - CREAR LA BASE DE DATOS:
-Entrar a SQL*Plus con el usuario JRUEDAC:
+CONEXION USADA:
+url: jdbc:oracle:thin:@localhost:1521:XE
+user: JRUEDAC
+password: JRUEDAC
 
-CONN JRUEDAC/JRUEDAC
+Si en la universidad usan ORCL, cambiar en ConexionBD.java:
+XE por ORCL.
 
-Ejecutar:
+ERROR CLASICO:
+ClassNotFoundException: oracle.jdbc.driver.OracleDriver
 
-@database/01_crear_bd_JRUEDAC.sql
-
-PASO 3 - AGREGAR OJDBC14:
-Copiar ojdbc14.jar dentro de la carpeta lib del proyecto:
-
-lib/ojdbc14.jar
-
-PASO 4 - ABRIR EN NETBEANS:
-Abrir NetBeans.
-Ir a File > Open Project.
-Seleccionar la carpeta ProyectoDatosPersonales_JRUEDAC.
-Click derecho sobre el proyecto > Clean and Build.
-Luego Run.
-
-NOTA SOBRE LA CONEXION:
-La clase de conexión usa:
-
-jdbc:oracle:thin:@localhost:1521:XE
-usuario: JRUEDAC
-clave: JRUEDAC
-
-Si tu Oracle usa ORCL, cambia XE por ORCL en:
-src/com/jruedac/conexion/ConexionBD.java
+SOLUCION:
+Ese error significa que falta ojdbc14.jar en Libraries del proyecto o no esta en lib/ojdbc14.jar.

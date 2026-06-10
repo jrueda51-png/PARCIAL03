@@ -4,9 +4,8 @@ import com.jruedac.controlador.PersonaControlador;
 import com.jruedac.modelo.Persona;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 public class PersonaVista extends JFrame {
@@ -29,43 +27,35 @@ public class PersonaVista extends JFrame {
     private JTextField txtTelefono;
     private JTextField txtEmail;
     private JTextField txtDireccion;
-
     private JButton btnGuardar;
     private JButton btnActualizar;
     private JButton btnEliminar;
-    private JButton btnLimpiar;
     private JButton btnReporte;
-
+    private JButton btnLimpiar;
     private JTable tabla;
     private DefaultTableModel modeloTabla;
-
     private PersonaControlador controlador;
-    private SimpleDateFormat formatoFecha;
 
     public PersonaVista() {
         controlador = new PersonaControlador();
-        formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-        formatoFecha.setLenient(false);
-
         configurarVentana();
         crearComponentes();
-        cargarReporte();
+        crearEventos();
     }
 
     private void configurarVentana() {
-        setTitle("Sistema de Datos Personales - MVC - JRUEDAC");
-        setSize(950, 600);
+        setTitle("Sistema de Datos Personales - JRUEDAC");
+        setSize(900, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
     }
 
     private void crearComponentes() {
-        JPanel panelFormulario = new JPanel(new GridLayout(9, 2, 5, 5));
+        JPanel panelFormulario = new JPanel(new GridLayout(10, 2));
 
         txtId = new JTextField();
         txtId.setEditable(false);
-
         txtNombre = new JTextField();
         txtApellidos = new JTextField();
         txtEdad = new JTextField();
@@ -77,48 +67,35 @@ public class PersonaVista extends JFrame {
 
         panelFormulario.add(new JLabel("ID:"));
         panelFormulario.add(txtId);
-
         panelFormulario.add(new JLabel("Nombre:"));
         panelFormulario.add(txtNombre);
-
         panelFormulario.add(new JLabel("Apellidos:"));
         panelFormulario.add(txtApellidos);
-
         panelFormulario.add(new JLabel("Edad:"));
         panelFormulario.add(txtEdad);
-
         panelFormulario.add(new JLabel("Cedula:"));
         panelFormulario.add(txtCedula);
-
-        panelFormulario.add(new JLabel("Fecha nacimiento DD/MM/YYYY:"));
+        panelFormulario.add(new JLabel("Fecha Nacimiento DD/MM/YYYY:"));
         panelFormulario.add(txtFecha);
-
         panelFormulario.add(new JLabel("Telefono:"));
         panelFormulario.add(txtTelefono);
-
         panelFormulario.add(new JLabel("Email:"));
         panelFormulario.add(txtEmail);
-
         panelFormulario.add(new JLabel("Direccion:"));
         panelFormulario.add(txtDireccion);
-
-        JPanel panelBotones = new JPanel(new FlowLayout());
 
         btnGuardar = new JButton("Guardar");
         btnActualizar = new JButton("Actualizar");
         btnEliminar = new JButton("Eliminar");
+        btnReporte = new JButton("Generar Reporte");
         btnLimpiar = new JButton("Limpiar");
-        btnReporte = new JButton("Generar reporte VIEW");
 
+        JPanel panelBotones = new JPanel();
         panelBotones.add(btnGuardar);
         panelBotones.add(btnActualizar);
         panelBotones.add(btnEliminar);
-        panelBotones.add(btnLimpiar);
         panelBotones.add(btnReporte);
-
-        JPanel panelSuperior = new JPanel(new BorderLayout());
-        panelSuperior.add(panelFormulario, BorderLayout.CENTER);
-        panelSuperior.add(panelBotones, BorderLayout.SOUTH);
+        panelBotones.add(btnLimpiar);
 
         modeloTabla = new DefaultTableModel();
         modeloTabla.addColumn("ID");
@@ -126,18 +103,22 @@ public class PersonaVista extends JFrame {
         modeloTabla.addColumn("Apellidos");
         modeloTabla.addColumn("Cedula");
         modeloTabla.addColumn("Edad");
-        modeloTabla.addColumn("Fecha nacimiento");
+        modeloTabla.addColumn("Fecha Nacimiento");
         modeloTabla.addColumn("Telefono");
         modeloTabla.addColumn("Email");
         modeloTabla.addColumn("Direccion");
-        modeloTabla.addColumn("Fecha registro");
 
         tabla = new JTable(modeloTabla);
-        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        panelSuperior.add(panelFormulario, BorderLayout.CENTER);
+        panelSuperior.add(panelBotones, BorderLayout.SOUTH);
 
         add(panelSuperior, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
+    }
 
+    private void crearEventos() {
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 guardar();
@@ -156,26 +137,26 @@ public class PersonaVista extends JFrame {
             }
         });
 
-        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                limpiar();
-            }
-        });
-
         btnReporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cargarReporte();
             }
         });
 
-        tabla.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limpiar();
+            }
+        });
+
+        tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 seleccionarFila();
             }
         });
     }
 
-    private Persona leerFormulario() throws Exception {
+    private Persona obtenerPersonaFormulario() throws Exception {
         Persona persona = new Persona();
 
         if (txtId.getText() != null && txtId.getText().trim().length() > 0) {
@@ -187,9 +168,8 @@ public class PersonaVista extends JFrame {
         persona.setEdad(Integer.parseInt(txtEdad.getText()));
         persona.setCedula(txtCedula.getText());
 
-        if (txtFecha.getText() != null && txtFecha.getText().trim().length() > 0) {
-            persona.setFechaNacimiento(formatoFecha.parse(txtFecha.getText()));
-        }
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        persona.setFechaNacimiento(formato.parse(txtFecha.getText()));
 
         persona.setTelefono(txtTelefono.getText());
         persona.setEmail(txtEmail.getText());
@@ -200,80 +180,92 @@ public class PersonaVista extends JFrame {
 
     private void guardar() {
         try {
-            Persona persona = leerFormulario();
-            controlador.guardarPersona(persona);
-            JOptionPane.showMessageDialog(this, "Datos guardados correctamente.");
-            limpiar();
-            cargarReporte();
+            Persona persona = obtenerPersonaFormulario();
+            boolean guardado = controlador.guardarPersona(persona);
 
+            if (guardado) {
+                JOptionPane.showMessageDialog(this, "Datos guardados correctamente");
+                limpiar();
+                cargarReporte();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo guardar. Revise la conexion y la base de datos.");
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
     }
 
     private void actualizar() {
         try {
-            Persona persona = leerFormulario();
-            controlador.actualizarPersona(persona);
-            JOptionPane.showMessageDialog(this, "Datos actualizados correctamente.");
-            limpiar();
-            cargarReporte();
+            if (txtId.getText() == null || txtId.getText().trim().length() == 0) {
+                JOptionPane.showMessageDialog(this, "Seleccione un registro de la tabla");
+                return;
+            }
 
+            Persona persona = obtenerPersonaFormulario();
+            boolean actualizado = controlador.actualizarPersona(persona);
+
+            if (actualizado) {
+                JOptionPane.showMessageDialog(this, "Datos actualizados correctamente");
+                limpiar();
+                cargarReporte();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo actualizar");
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
     }
 
     private void eliminar() {
         try {
             if (txtId.getText() == null || txtId.getText().trim().length() == 0) {
-                JOptionPane.showMessageDialog(this, "Seleccione un registro de la tabla.");
+                JOptionPane.showMessageDialog(this, "Seleccione un registro de la tabla");
                 return;
             }
 
-            int confirmar = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Desea eliminar el registro seleccionado?",
-                    "Confirmar eliminación",
-                    JOptionPane.YES_NO_OPTION
-            );
+            int confirmacion = JOptionPane.showConfirmDialog(this, "Desea eliminar el registro seleccionado?", "Confirmar", JOptionPane.YES_NO_OPTION);
 
-            if (confirmar == JOptionPane.YES_OPTION) {
-                controlador.eliminarPersona(Integer.parseInt(txtId.getText()));
-                JOptionPane.showMessageDialog(this, "Datos eliminados correctamente.");
-                limpiar();
-                cargarReporte();
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                int idPersona = Integer.parseInt(txtId.getText());
+                boolean eliminado = controlador.eliminarPersona(idPersona);
+
+                if (eliminado) {
+                    JOptionPane.showMessageDialog(this, "Datos eliminados correctamente");
+                    limpiar();
+                    cargarReporte();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo eliminar");
+                }
             }
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
     }
 
     private void cargarReporte() {
         try {
-            List lista = controlador.generarReporte();
-
+            ResultSet rs = controlador.generarReporte();
             modeloTabla.setRowCount(0);
 
-            for (int i = 0; i < lista.size(); i++) {
-                Persona persona = (Persona) lista.get(i);
-                Object[] fila = new Object[10];
-
-                fila[0] = new Integer(persona.getIdPersona());
-                fila[1] = persona.getNombre();
-                fila[2] = persona.getApellidos();
-                fila[3] = persona.getCedula();
-                fila[4] = new Integer(persona.getEdad());
-                fila[5] = persona.getFechaNacimiento() != null ? formatoFecha.format(persona.getFechaNacimiento()) : "";
-                fila[6] = persona.getTelefono();
-                fila[7] = persona.getEmail();
-                fila[8] = persona.getDireccion();
-                fila[9] = persona.getFechaRegistro() != null ? formatoFecha.format(persona.getFechaRegistro()) : "";
-
-                modeloTabla.addRow(fila);
+            if (rs == null) {
+                JOptionPane.showMessageDialog(this, "No se pudo cargar el reporte. Revise que ojdbc14.jar este agregado al proyecto.");
+                return;
             }
 
+            while (rs.next()) {
+                modeloTabla.addRow(new Object[]{
+                    new Integer(rs.getInt("ID_PERSONA")),
+                    rs.getString("NOMBRE"),
+                    rs.getString("APELLIDOS"),
+                    rs.getString("CEDULA"),
+                    new Integer(rs.getInt("EDAD")),
+                    rs.getDate("FECHA_NACIMIENTO"),
+                    rs.getString("TELEFONO"),
+                    rs.getString("EMAIL"),
+                    rs.getString("DIRECCION")
+                });
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al generar reporte: " + e.getMessage());
         }
@@ -288,10 +280,22 @@ public class PersonaVista extends JFrame {
             txtApellidos.setText(String.valueOf(modeloTabla.getValueAt(fila, 2)));
             txtCedula.setText(String.valueOf(modeloTabla.getValueAt(fila, 3)));
             txtEdad.setText(String.valueOf(modeloTabla.getValueAt(fila, 4)));
-            txtFecha.setText(String.valueOf(modeloTabla.getValueAt(fila, 5)));
+            txtFecha.setText(formatearFecha(modeloTabla.getValueAt(fila, 5)));
             txtTelefono.setText(String.valueOf(modeloTabla.getValueAt(fila, 6)));
             txtEmail.setText(String.valueOf(modeloTabla.getValueAt(fila, 7)));
             txtDireccion.setText(String.valueOf(modeloTabla.getValueAt(fila, 8)));
+        }
+    }
+
+    private String formatearFecha(Object fecha) {
+        try {
+            if (fecha == null) {
+                return "";
+            }
+            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+            return formato.format(fecha);
+        } catch (Exception e) {
+            return String.valueOf(fecha);
         }
     }
 
@@ -305,6 +309,5 @@ public class PersonaVista extends JFrame {
         txtTelefono.setText("");
         txtEmail.setText("");
         txtDireccion.setText("");
-        tabla.clearSelection();
     }
 }

@@ -1,0 +1,10 @@
+Copie el archivo ojdbc14.jar en esta carpeta.
+
+La ruta final debe quedar asi:
+
+JRUEDAC/lib/ojdbc14.jar
+
+Despues en NetBeans haga:
+Project Properties > Libraries > Add JAR/Folder > lib/ojdbc14.jar
+Clean and Build
+Run
